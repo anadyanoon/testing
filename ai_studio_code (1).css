@@ -1,0 +1,49 @@
+/* Color Palette Variables and Typography Mapping */
+:root {
+  --bg-obsidian-950: #050507;
+  --bg-obsidian-900: #0E0F12;
+  --border-slate-800: #1F222A;
+  --cyber-blue: #22D3EE;
+  --electric-emerald: #34D399;
+  --crimson-signal: #F43F5E;
+  --neon-violet: #8B5CF6;
+  --text-slate: #94A3B8;
+  --text-light: #F8FAFC;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: #010102;
+  color: var(--text-light);
+  font-family: 'Geist', sans-serif;
+  overflow: hidden;
+}
+
+/* System Typography Utilities */
+.font-mono {
+  font-family: 'Geist Mono', monospace;
+}
+
+.text-cyan { color: var(--cyber-blue); }
+.text-emerald { color: var(--electric-emerald); }
+.text-rose { color: var(--crimson-signal); }
+.text-violet { color: var(--neon-violet); }
+.text-slate { color: var(--text-slate); }
+
+/* Main Mobile Wrapper Setup */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  max-width: 480px;
+  margin: 0 auto;
+  background-color: var(--bg-obsidian-950);
+  border-left: 1px solid var(--border-slate-800);
+  border-right: 1px solid var(--bord

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>NEXUS / OS</title>
+  
+  <!-- Premium Font Pairings -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;500;700&family=Geist:wght@300;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Relative Assets (Required for GitHub Pages compatibility) -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Header Status Bar -->
+    <header class="app-header">
+      <div class="header-logo">
+        <span class="status-pulse"></span>
+        <span class="logo-text">NEXUS / OS</span>
+      </div>
+      <div class="header-telemetry font-mono">
+        LATENCY: <span id="telemetry-latency">14ms</span>
+      </div>
+    </header>
+
+    <!-- Main Viewport Context -->
+    <main class="app-viewport">
+
+      <!-- SECTION 1: RADAR (HOME FEED) -->
+      <section id="view-radar" class="app-view active">
+        <div class="view-header">
+          <h2 class="view-title font-mono">ACTIVE TELEMETRY</h2>
+          <span class="view-status font-mono text-emerald">ONLINE</span>
+        </div>
+        <div id="radar-feed-container" class="space-y-4">
+          <!-- Dynamic cards will render here via JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 2: AI CAMPAIGN GENERATOR -->
+      <section id="view-generator" class="app-view">
+        <div class="view-header">
+          <h2 class="view-title font-mono">ASSET COGNITION</h2>
+        </div>
+        <form id="generator-form" class="generator-form">
+          <textarea 
+            id="generator-input" 
+            placeholder="Describe your target audience and promotion rules (e.g., Weekend high-urgency fashion sale targeting Gen-Z with visual UGC triggers)..."
+            required></textarea>
+          <button type="submit" id="generator-submit-btn" class="font-mono btn-primary">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            <span>GENERATE CAMPAIGN COGNITION</span>
+          </button>
+        </form>
+
+        <div id="terminal-loader" class="terminal-loader hidden">
+          <div class="font-mono text-violet tracking-wider">RESOLVING PARSING NODES...</div>
+          <div class="font-mono text-slate text-xs mt-1" id="terminal-step">Extracting semantic vector points</div>
+          <div class="loading-bar"><div class="loading-bar-inner"></div></div>
+        </div>
+
+        <div id="generator-outputs" class="generator-outputs hidden space-y-4">
+          <div class="anchor-output card">
+            <span class="label font-mono text-violet">CORE ATTRIBUTION HOOK</span>
+            <p id="generated-anchor" class="text-white text-md font-bold mt-1"></p>
+          </div>
+          <div id="channel
