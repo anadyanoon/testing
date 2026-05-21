@@ -1,0 +1,363 @@
+import React, { useState } from 'react';
+import { 
+  SparklesIcon, 
+  BoltIcon, 
+  ArrowPathIcon, 
+  AdjustmentsHorizontalIcon,
+  ShoppingBagIcon,
+  GlobeAltIcon
+} from '@heroicons/react/24/outline';
+
+// Types representing app state
+type ActiveTab = 'radar' | 'generator' | 'merch' | 'experiments' | 'competitors';
+
+interface Insight {
+  id: string;
+  title: string;
+  description: string;
+  metricDelta: number;
+  impactUsd: number;
+  severity: 'critical' | 'high' | 'medium';
+  actionLabel: string;
+}
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState<ActiveTab>('radar');
+  const [prompt, setPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedAssets, setGeneratedAssets] = useState<any | null>(null);
+
+  // Simulated live telemetry state
+  const [insights, setInsights] = useState<Insight[]>([
+    {
+      id: '1',
+      title: 'CTR dropped 18% in Electronics',
+      description: 'Homepage banner slot 2 performance fell below running deviation bounds. Recommended action: Swop visual display pattern.',
+      metricDelta: -18.4,
+      impactUsd: 4200,
+      severity: 'critical',
+      actionLabel: 'Swap to recommended visual'
+    },
+    {
+      id: '2',
+      title: 'Skincare trending aggressively on TikTok',
+      description: 'Calculated baseline demand has surged 240% across native platform scrapes. Target: Gen Z user segments.',
+      metricDelta: 240,
+      impactUsd: 8700,
+      severity: 'high',
+      actionLabel: 'Spin up high-urgency campaign'
+    },
+    {
+      id: '3',
+      title: 'Inventory low alert: SKU-9042 (Corset Crop)',
+      description: 'Run rate analysis suggests out-of-stock condition in less than 32 hours. Preventative budget reallocation ready.',
+      metricDelta: -12.1,
+      impactUsd: 3100,
+      severity: 'medium',
+      actionLabel: 'Reallocate performance budget'
+    }
+  ]);
+
+  // Handle simulated action resolution
+  const resolveInsight = (id: string) => {
+    setInsights(prev => prev.filter(item => item.id !== id));
+  };
+
+  // Simulated AI Campaign Asset Generation
+  const handleGenerate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!prompt.trim()) return;
+
+    setIsGenerating(true);
+    setTimeout(() => {
+      setGeneratedAssets({
+        headline: "🚨 This week's viral style? Back in stock.",
+        channels: [
+          { type: 'Push Notification', body: 'Only 120 restocked. Claim your custom curation discount code now before size limits run out.' },
+          { type: 'TikTok Hook Script', body: 'POV: You discover the actual matching knit sets that sold out across Instagram for 15% off.' },
+          { type: 'Meta Ads Copy', body: 'Engineered for extreme wearability. Find your color profile and shop now with free priority shipping.' }
+        ]
+      });
+      setIsGenerating(false);
+    }, 1500);
+  };
+
+  return (
+    <div className="flex flex-col h-screen max-w-md mx-auto bg-[#050507] text-slate-100 border-x border-[#1F222A] relative overflow-hidden">
+      
+      {/* 1. Header */}
+      <header className="px-4 pt-6 pb-4 border-b border-[#1F222A] bg-[#050507]/90 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></div>
+          <span className="font-mono text-sm tracking-widest font-black text-slate-200">NEXUS / OS</span>
+        </div>
+        <div className="flex items-center gap-2 bg-[#0E0F12] border border-[#1F222A] px-2 py-1 rounded text-[10px] font-mono text-cyan-400">
+          <span>LATENCY: 14ms</span>
+        </div>
+      </header>
+
+      {/* 2. Scrollable App Frame */}
+      <main className="flex-1 overflow-y-auto px-4 py-4 pb-24">
+        
+        {/* TAB 1: RADAR / HOME FEED */}
+        {activeTab === 'radar' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Active Signals</h2>
+              <span className="text-[10px] font-mono text-emerald-400">All streams online</span>
+            </div>
+
+            {insights.length === 0 ? (
+              <div className="border border-dashed border-[#1F222A] p-8 text-center rounded-lg">
+                <p className="text-xs text-slate-500 font-mono">No active anomalies detected.</p>
+              </div>
+            ) : (
+              insights.map(item => (
+                <div key={item.id} className="bg-[#0E0F12] border border-[#1F222A] rounded-lg p-4 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <span className={`font-mono text-[9px] font-extrabold px-1.5 py-0.5 rounded tracking-wide ${
+                      item.severity === 'critical' ? 'bg-rose-950/50 text-rose-400 border border-rose-900' :
+                      item.severity === 'high' ? 'bg-violet-950/50 text-violet-400 border border-violet-900' :
+                      'bg-cyan-950/50 text-cyan-400 border border-cyan-900'
+                    }`}>
+                      {item.severity.toUpperCase()} ALERT
+                    </span>
+                    <span className={`font-mono text-xs font-bold ${item.metricDelta > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      {item.metricDelta > 0 ? `+${item.metricDelta}%` : `${item.metricDelta}%`}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-100">{item.title}</h3>
+                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">{item.description}</p>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-2 border-t border-[#1F222A]/60">
+                    <div>
+                      <span className="block text-[8px] text-slate-500 font-mono tracking-wider">EST. LOSS IMPLICATION</span>
+                      <span className="font-mono text-xs font-bold text-slate-200">${item.impactUsd.toLocaleString()}</span>
+                    </div>
+                    <button 
+                      onClick={() => resolveInsight(item.id)}
+                      className="bg-[#1F222A] hover:bg-[#2e333f] text-cyan-400 font-mono text-[10px] font-bold px-3 py-1.5 rounded transition flex items-center gap-1.5"
+                    >
+                      <span>⚡ {item.actionLabel}</span>
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* TAB 2: AI GENERATOR */}
+        {activeTab === 'generator' && (
+          <div className="space-y-4 animate-fade-in">
+            <h2 className="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Interactive Asset Engine</h2>
+            
+            <form onSubmit={handleGenerate} className="space-y-3">
+              <textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="e.g. Create a high-urgency fashion campaign targeting Gen-Z with visual UGC..."
+                className="w-full bg-[#0E0F12] border border-[#1F222A] rounded-lg p-3 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-violet-500 min-h-[100px] leading-relaxed resize-none"
+              />
+              <button 
+                type="submit" 
+                disabled={isGenerating}
+                className="w-full bg-violet-600 hover:bg-violet-700 disabled:bg-violet-800 disabled:opacity-50 text-white font-mono text-xs py-2.5 rounded-lg transition font-bold flex items-center justify-center gap-2"
+              >
+                {isGenerating ? (
+                  <>
+                    <ArrowPathIcon className="h-4.5 w-4.5 animate-spin" />
+                    <span>CALCULATING COGNITIVE VECTORS...</span>
+                  </>
+                ) : (
+                  <>
+                    <SparklesIcon className="h-4.5 w-4.5" />
+                    <span>GENERATE MULTI-CHANNEL ASSETS</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {generatedAssets && (
+              <div className="mt-6 space-y-4 animate-fade-in border-t border-[#1F222A] pt-4">
+                <div className="p-3 bg-[#0E0F12] border border-[#1F222A] rounded-lg">
+                  <span className="block text-[8px] font-mono text-violet-400 mb-1">GENERATED CORE ANCHOR</span>
+                  <p className="text-sm font-bold text-slate-200">{generatedAssets.headline}</p>
+                </div>
+
+                {generatedAssets.channels.map((chan: any, idx: number) => (
+                  <div key={idx} className="bg-[#0E0F12]/60 border border-[#1F222A] rounded-lg p-3 space-y-2">
+                    <span className="text-[9px] font-mono text-cyan-400 font-extrabold uppercase tracking-wide">{chan.type}</span>
+                    <p className="text-xs text-slate-300 leading-relaxed font-mono">{chan.body}</p>
+                    <div className="flex justify-end gap-2 pt-2 border-t border-[#1F222A]/40">
+                      <button className="text-[10px] font-mono text-slate-500 hover:text-slate-300">Copy</button>
+                      <button className="text-[10px] font-mono text-emerald-400 font-bold hover:text-emerald-300">⚡ Dispatch</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: MERCH WORKSPACE */}
+        {activeTab === 'merch' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Grid Placements</h2>
+              <span className="text-[10px] font-mono text-cyan-400">Active Site: default_us</span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="border border-[#1F222A] rounded-lg p-3 bg-[#0E0F12]">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[10px] font-mono text-slate-500">SLOT 1: HERO HOME CAROUSEL</span>
+                  <span className="text-xs font-mono text-emerald-400">CTR: 4.8%</span>
+                </div>
+                <div className="p-2 border border-[#1F222A] rounded bg-[#050507] flex items-center justify-between">
+                  <span className="text-xs font-mono">SKU-4902 (TikTok Lace Knit)</span>
+                  <span className="text-[9px] font-mono bg-violet-950/50 text-violet-400 px-1.5 py-0.5 rounded border border-violet-900">AI Placed</span>
+                </div>
+              </div>
+
+              <div className="border border-rose-950/40 rounded-lg p-3 bg-rose-950/10">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[10px] font-mono text-rose-400">SLOT 2: WEEKEND SELECTION</span>
+                  <span className="text-xs font-mono text-rose-400">CTR: 1.1% (Underperforming)</span>
+                </div>
+                <div className="p-2 border border-rose-900/60 rounded bg-[#050507] flex items-center justify-between">
+                  <span className="text-xs font-mono text-rose-300">SKU-1022 (Basic Crewneck)</span>
+                </div>
+                <div className="mt-3 flex items-center gap-2 border-t border-[#1F222A] pt-2">
+                  <span className="text-[9px] font-mono text-cyan-400">Recommendation:</span>
+                  <button className="text-[10px] font-mono bg-[#1F222A] text-slate-200 px-2.5 py-1 rounded hover:bg-slate-800 transition">
+                    Swap to SKU-8849 (+1.9% est)
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: EXPERIMENT LAB */}
+        {activeTab === 'experiments' && (
+          <div className="space-y-4 animate-fade-in">
+            <h2 className="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Statistical Splits</h2>
+            
+            <div className="border border-[#1F222A] rounded-lg p-4 bg-[#0E0F12] space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="font-mono text-xs font-bold text-cyan-400">EXP-9942</span>
+                <span className="font-mono text-[10px] bg-emerald-950/50 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-900">SIGNIFICANT</span>
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold">UGC Video vs Static Studio Banners</h3>
+                <p className="text-xs text-slate-400 mt-1">Comparing conversion lift metrics for incoming TikTok ad referral cohorts.</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-2">
+                <div className="p-2 border border-[#1F222A] rounded bg-[#050507] text-center">
+                  <span className="block text-[8px] font-mono text-slate-500">VARIANT A (STATIC)</span>
+                  <span className="font-mono text-sm font-bold text-slate-300">1.84% CR</span>
+                </div>
+                <div className="p-2 border border-emerald-900 rounded bg-emerald-950/20 text-center">
+                  <span className="block text-[8px] font-mono text-emerald-400">VARIANT B (UGC VIDEO)</span>
+                  <span className="font-mono text-sm font-bold text-emerald-400">2.91% CR</span>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button className="w-full bg-[#1F222A] hover:bg-[#2e333f] text-slate-200 text-xs font-mono py-2 rounded transition">
+                  Set Variant B as Live Storefront Default
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 5: COMPETITORS */}
+        {activeTab === 'competitors' && (
+          <div className="space-y-4 animate-fade-in">
+            <h2 className="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Scraped Competitive Matrices</h2>
+
+            <div className="space-y-3">
+              <div className="p-3 bg-[#0E0F12] border border-[#1F222A] rounded-lg">
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="font-mono text-xs font-black text-rose-400">TEMU MARKETPLACE</span>
+                  <span className="text-[10px] font-mono text-slate-500">2h ago</span>
+                </div>
+                <p className="text-xs font-semibold">SKU: "Corset Waist Wrap Bustier"</p>
+                <div className="mt-2 flex gap-4 text-xs font-mono">
+                  <div>
+                    <span className="block text-[8px] text-slate-500">THEIR PRICE</span>
+                    <span className="text-rose-400 font-bold">$3.82</span>
+                  </div>
+                  <div>
+                    <span className="block text-[8px] text-slate-500 font-mono">OUR BASE</span>
+                    <span className="text-slate-300 font-bold">$19.99</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-3 bg-[#0E0F12] border border-[#1F222A] rounded-lg">
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="font-mono text-xs font-black text-violet-400">TIKTOK SHOP US</span>
+                  <span className="text-[10px] font-mono text-slate-500">4h ago</span>
+                </div>
+                <p className="text-xs font-semibold">Topic: "Gloss-Oil Lip Tint Plumper"</p>
+                <p className="text-xs text-slate-400 mt-1">Surging at 4,800 unit orders per day velocity. Our catalog matching index: 92% coverage.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* 3. Global Command Bar & Tab Navigation */}
+      <nav className="absolute bottom-0 inset-x-0 bg-[#050507] border-t border-[#1F222A] px-2 py-3 pb-safe z-40 flex justify-between items-center">
+        <button 
+          onClick={() => setActiveTab('radar')}
+          className={`flex flex-col items-center flex-1 py-1 transition ${activeTab === 'radar' ? 'text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}
+        >
+          <BoltIcon className="h-5 w-5" />
+          <span className="text-[9px] font-mono mt-1">Radar</span>
+        </button>
+
+        <button 
+          onClick={() => setActiveTab('generator')}
+          className={`flex flex-col items-center flex-1 py-1 transition ${activeTab === 'generator' ? 'text-violet-400' : 'text-slate-500 hover:text-slate-300'}`}
+        >
+          <SparklesIcon className="h-5 w-5" />
+          <span className="text-[9px] font-mono mt-1">Create</span>
+        </button>
+
+        <button 
+          onClick={() => setActiveTab('merch')}
+          className={`flex flex-col items-center flex-1 py-1 transition ${activeTab === 'merch' ? 'text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}
+        >
+          <ShoppingBagIcon className="h-5 w-5" />
+          <span className="text-[9px] font-mono mt-1">Merch</span>
+        </button>
+
+        <button 
+          onClick={() => setActiveTab('experiments')}
+          className={`flex flex-col items-center flex-1 py-1 transition ${activeTab === 'experiments' ? 'text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}
+        >
+          <AdjustmentsHorizontalIcon className="h-5 w-5" />
+          <span className="text-[9px] font-mono mt-1">Lab</span>
+        </button>
+
+        <button 
+          onClick={() => setActiveTab('competitors')}
+          className={`flex flex-col items-center flex-1 py-1 transition ${activeTab === 'competitors' ? 'text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}
+        >
+          <GlobeAltIcon className="h-5 w-5" />
+          <span className="text-[9px] font-mono mt-1">Competitors</span>
+        </button>
+      </nav>
+
+    </div>
+  );
+}
