@@ -3,848 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="theme-color" content="#0b0a12">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="STILL">
-<meta name="description" content="A calm emotional space. Mood rooms, ambient sound, and words to breathe by.">
+<meta name="description" content="A late-night companion for the nervous system. For anyone carrying a difficult past.">
 <title>STILL</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Suisse+Intl:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ease-out-expo:cubic-bezier(0.16,1,0.3,1);
-  --ease-in-out:cubic-bezier(0.45,0,0.55,1);
-  --room-bg:#0a0a0f;
-  --room-accent:#ffffff18;
-  --room-text:#ffffff;
-  --room-muted:#ffffff66;
-  --room-glow:rgba(200,200,255,0.06);
-  --room-particle:rgba(255,255,255,0.12);
-  --transition:0.9s var(--ease-out-expo);
+  --bg:#0b0a12;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Inter Tight',system-ui,sans-serif;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --glass:rgba(255,255,255,0.045);
+  --glass-border:rgba(255,255,255,0.09);
+  --glass-hover:rgba(255,255,255,0.08);
+  --text:#f4f1ee;
+  --text-soft:rgba(244,241,238,0.62);
+  --text-faint:rgba(244,241,238,0.32);
+  --aura-1:#3a2a52;
+  --aura-2:#1a2438;
+  --aura-3:#2a1828;
+  --accent:#c8b8e8;
   font-size:16px;
 }
-html,body{
-  width:100%;height:100%;overflow:hidden;
-  background:#0a0a0f;
-  color:#fff;
-  font-family:'Cormorant Garamond',Georgia,serif;
-  -webkit-font-smoothing:antialiased;
-  user-select:none;
-}
-canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;}
-
-/* ── SPLASH ── */
-#splash{
-  position:fixed;inset:0;z-index:100;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:#0a0a0f;
-  transition:opacity 1.2s ease,visibility 1.2s ease;
-}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;user-select:none;
+  -webkit-tap-highlight-color:transparent;}
+#aura{position:fixed;inset:-20%;z-index:0;filter:blur(80px);opacity:0.9;transition:opacity 2s ease;}
+.blob{position:absolute;border-radius:50%;mix-blend-mode:screen;transition:background 3s var(--ease);}
+#b1{width:60vw;height:60vw;top:-5%;left:-10%;background:var(--aura-1);animation:drift1 28s ease-in-out infinite;}
+#b2{width:55vw;height:55vw;bottom:-10%;right:-5%;background:var(--aura-2);animation:drift2 34s ease-in-out infinite;}
+#b3{width:45vw;height:45vw;top:30%;left:30%;background:var(--aura-3);animation:drift3 40s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(8vw,6vh) scale(1.15);}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1.1);}50%{transform:translate(-7vw,-5vh) scale(1);}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-5vw,8vh) scale(1.2);}}
+canvas#grain{position:fixed;inset:0;z-index:1;opacity:0.04;pointer-events:none;mix-blend-mode:overlay;}
+#vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,0.55) 100%);}
+#splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;transition:opacity 1.6s ease,visibility 1.6s ease;}
 #splash.gone{opacity:0;visibility:hidden;pointer-events:none;}
-.splash-word{
-  font-size:clamp(3.5rem,12vw,7rem);
-  font-weight:300;letter-spacing:0.5em;
-  color:#fff;text-transform:uppercase;
-  animation:fadeUp 1.4s var(--ease-out-expo) both;
-}
-.splash-sub{
-  margin-top:1.5rem;font-size:0.85rem;letter-spacing:0.35em;
-  color:#ffffff55;text-transform:uppercase;font-family:'Cormorant Garamond',serif;font-style:italic;
-  animation:fadeUp 1.4s 0.3s var(--ease-out-expo) both;
-}
-.splash-enter{
-  margin-top:3rem;
-  background:none;border:0.5px solid #ffffff33;color:#ffffff88;
-  padding:0.75rem 2.5rem;border-radius:50px;
-  font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:0.2em;
-  cursor:pointer;transition:all 0.4s ease;
-  text-transform:uppercase;
-  animation:fadeUp 1.4s 0.6s var(--ease-out-expo) both;
-}
-.splash-enter:hover{background:#ffffff11;border-color:#ffffff66;color:#fff;}
-
-/* ── APP SHELL ── */
-#app{
-  position:fixed;inset:0;z-index:1;
-  display:flex;flex-direction:column;
-  opacity:0;transition:opacity 1s ease;
-  pointer-events:none;
-}
-#app.active{opacity:1;pointer-events:all;}
-
-/* ── ROOM LAYER ── */
-#room-overlay{
-  position:fixed;inset:0;z-index:1;
-  transition:background 2.5s ease,opacity 2s ease;
-  pointer-events:none;
-}
-
-/* ── QUOTE ── */
-#quote-wrap{
-  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:10;width:min(600px,88vw);text-align:center;
-  pointer-events:none;
-}
-#quote-text{
-  font-size:clamp(1.4rem,3.5vw,2rem);
-  font-weight:300;font-style:italic;
-  line-height:1.65;color:#ffffffcc;
-  letter-spacing:0.01em;
-  transition:opacity 0.8s ease,transform 0.8s var(--ease-out-expo);
-}
-#quote-text.hidden{opacity:0;transform:translateY(10px);}
-#quote-attr{
-  margin-top:1.2rem;font-size:0.8rem;letter-spacing:0.25em;
-  color:#ffffff44;text-transform:uppercase;font-family:'Cormorant Garamond',serif;
-  transition:opacity 0.8s ease;
-}
-#quote-attr.hidden{opacity:0;}
-
-/* ── ROOMS BAR ── */
-#rooms-bar{
-  position:fixed;bottom:0;left:0;right:0;z-index:20;
-  padding:0 1.5rem 2rem;
-  display:flex;flex-direction:column;align-items:center;gap:1rem;
-}
-#rooms-scroll{
-  display:flex;gap:0.75rem;overflow-x:auto;
-  scrollbar-width:none;max-width:100%;
-  padding:0.25rem;
-}
-#rooms-scroll::-webkit-scrollbar{display:none;}
-.room-btn{
-  flex:0 0 auto;
-  display:flex;flex-direction:column;align-items:center;gap:0.4rem;
-  background:rgba(255,255,255,0.07);
-  border:0.5px solid rgba(255,255,255,0.15);
-  border-radius:16px;padding:0.9rem 1.1rem;
-  cursor:pointer;transition:all 0.4s ease;min-width:80px;
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-}
-.room-btn:hover{background:rgba(255,255,255,0.13);border-color:rgba(255,255,255,0.3);}
-.room-btn.active{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.5);}
-.room-icon{font-size:1.4rem;line-height:1;}
-.room-name{font-size:0.65rem;letter-spacing:0.18em;color:#ffffff99;text-transform:uppercase;font-family:'Cormorant Garamond',serif;}
-.room-btn.active .room-name{color:#ffffffcc;}
-
-/* ── CONTROLS ── */
-#controls{
-  position:fixed;top:0;left:0;right:0;z-index:20;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:env(safe-area-inset-top,1rem) 1.5rem 0.75rem;
-}
-.ctrl-btn{
-  background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);
-  border-radius:50%;width:42px;height:42px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all 0.3s ease;
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  color:#ffffff88;font-size:1rem;
-}
-.ctrl-btn:hover{background:rgba(255,255,255,0.14);color:#fff;}
-#logo{
-  font-size:0.8rem;letter-spacing:0.5em;color:#ffffff55;
-  text-transform:uppercase;font-family:'Cormorant Garamond',serif;
-}
-
-/* ── SOUND PANEL ── */
-#sound-panel{
-  position:fixed;top:0;left:0;right:0;bottom:0;z-index:30;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  opacity:0;pointer-events:none;transition:opacity 0.4s ease;
-}
-#sound-panel.open{opacity:1;pointer-events:all;}
-.panel-card{
-  background:rgba(255,255,255,0.06);
-  border:0.5px solid rgba(255,255,255,0.15);
-  border-radius:24px;padding:2rem;
-  width:min(420px,90vw);
-}
-.panel-title{
-  font-size:0.75rem;letter-spacing:0.3em;color:#ffffff55;
-  text-transform:uppercase;margin-bottom:1.5rem;
-}
-.sound-item{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0.8rem 0;border-bottom:0.5px solid rgba(255,255,255,0.08);
-}
-.sound-item:last-child{border-bottom:none;}
-.sound-label{font-size:1rem;font-style:italic;color:#ffffffbb;}
-.sound-controls{display:flex;align-items:center;gap:0.75rem;}
-.vol-slider{
-  -webkit-appearance:none;appearance:none;
-  width:90px;height:2px;border-radius:1px;
-  background:rgba(255,255,255,0.2);outline:none;cursor:pointer;
-}
-.vol-slider::-webkit-slider-thumb{
-  -webkit-appearance:none;width:14px;height:14px;
-  border-radius:50%;background:#fff;cursor:pointer;
-}
-.sound-toggle{
-  background:none;border:0.5px solid rgba(255,255,255,0.25);
-  border-radius:50%;width:30px;height:30px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all 0.3s;color:#ffffff88;font-size:0.85rem;
-}
-.sound-toggle.on{background:rgba(255,255,255,0.2);color:#fff;border-color:#ffffff66;}
-.panel-close{
-  margin-top:1.5rem;width:100%;background:rgba(255,255,255,0.08);
-  border:0.5px solid rgba(255,255,255,0.15);border-radius:12px;
-  padding:0.75rem;color:#ffffffbb;font-family:'Cormorant Garamond',serif;
-  font-size:0.9rem;letter-spacing:0.15em;cursor:pointer;
-  text-transform:uppercase;transition:all 0.3s;
-}
-.panel-close:hover{background:rgba(255,255,255,0.14);}
-
-/* ── BREATHE ── */
-#breathe-wrap{
-  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:9;pointer-events:none;
-}
-#breathe-ring{
-  width:180px;height:180px;border-radius:50%;
-  border:0.5px solid rgba(255,255,255,0.08);
-  display:flex;align-items:center;justify-content:center;
-  animation:breathe 8s ease-in-out infinite;
-  background:radial-gradient(circle,rgba(255,255,255,0.015) 0%,transparent 70%);
-}
-@keyframes breathe{
-  0%,100%{transform:scale(0.85);opacity:0.4;}
-  50%{transform:scale(1.15);opacity:0.9;}
-}
-
-/* ── EDIT MODAL ── */
-#edit-panel{
-  position:fixed;top:0;left:0;right:0;bottom:0;z-index:40;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,0.8);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  opacity:0;pointer-events:none;transition:opacity 0.4s ease;overflow-y:auto;
-}
-#edit-panel.open{opacity:1;pointer-events:all;}
-.edit-card{
-  background:rgba(20,18,30,0.95);
-  border:0.5px solid rgba(255,255,255,0.15);
-  border-radius:24px;padding:2rem;
-  width:min(520px,92vw);margin:2rem auto;
-}
-.edit-section{margin-bottom:1.75rem;}
-.edit-label{font-size:0.7rem;letter-spacing:0.3em;color:#ffffff55;text-transform:uppercase;margin-bottom:0.6rem;display:block;}
-.edit-input,.edit-textarea{
-  width:100%;background:rgba(255,255,255,0.06);
-  border:0.5px solid rgba(255,255,255,0.15);border-radius:10px;
-  padding:0.7rem 1rem;color:#ffffffcc;
-  font-family:'Cormorant Garamond',serif;font-size:1rem;
-  outline:none;resize:vertical;transition:border 0.3s;
-}
-.edit-input:focus,.edit-textarea:focus{border-color:rgba(255,255,255,0.4);}
-.edit-textarea{min-height:120px;line-height:1.6;}
-.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
-.color-pick-wrap{display:flex;align-items:center;gap:0.75rem;}
-input[type="color"]{
-  width:40px;height:40px;border:none;padding:0;border-radius:8px;cursor:pointer;
-  background:none;overflow:hidden;
-}
-.edit-save{
-  width:100%;background:rgba(255,255,255,0.12);
-  border:0.5px solid rgba(255,255,255,0.3);border-radius:12px;
-  padding:0.85rem;color:#fff;font-family:'Cormorant Garamond',serif;
-  font-size:1rem;letter-spacing:0.15em;cursor:pointer;
-  text-transform:uppercase;transition:all 0.3s;margin-top:0.5rem;
-}
-.edit-save:hover{background:rgba(255,255,255,0.2);}
-.edit-cancel{
-  width:100%;background:none;border:none;
-  padding:0.75rem;color:#ffffff44;font-family:'Cormorant Garamond',serif;
-  font-size:0.85rem;cursor:pointer;letter-spacing:0.15em;text-transform:uppercase;
-}
-
-/* ── QUOTE NAV ── */
-#quote-nav{
-  position:fixed;bottom:8rem;left:50%;transform:translateX(-50%);
-  z-index:20;display:flex;gap:1rem;align-items:center;
-}
-.qnav-btn{
-  background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.12);
-  border-radius:50%;width:36px;height:36px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:#ffffff55;font-size:0.85rem;
-  transition:all 0.3s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-}
-.qnav-btn:hover{background:rgba(255,255,255,0.14);color:#fff;}
-#quote-dots{display:flex;gap:0.4rem;align-items:center;}
-.qdot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.25);transition:all 0.3s;}
-.qdot.active{background:#fff;width:16px;border-radius:2px;}
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-/* ── TOAST ── */
-#toast{
-  position:fixed;bottom:12rem;left:50%;transform:translateX(-50%);
-  background:rgba(255,255,255,0.1);border:0.5px solid rgba(255,255,255,0.2);
-  border-radius:50px;padding:0.5rem 1.25rem;
-  font-size:0.78rem;letter-spacing:0.12em;color:#ffffffbb;
-  backdrop-filter:blur(12px);z-index:50;
-  opacity:0;transition:opacity 0.4s;pointer-events:none;
-  text-transform:uppercase;font-family:'Cormorant Garamond',serif;
-}
-#toast.show{opacity:1;}
-
-/* ── MOBILE ── */
-@media(max-width:480px){
-  .edit-grid{grid-template-columns:1fr;}
-}
+.s-mark{font-family:var(--serif);font-weight:300;font-size:clamp(3rem,11vw,5.5rem);letter-spacing:0.42em;text-indent:0.42em;color:var(--text);animation:rise 1.8s var(--ease) both;}
+.s-line{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(1rem,3.6vw,1.35rem);color:var(--text-soft);margin-top:1.6rem;max-width:22ch;line-height:1.5;animation:rise 1.8s 0.4s var(--ease) both;}
+.s-enter{margin-top:3.5rem;background:var(--glass);border:0.5px solid var(--glass-border);color:var(--text-soft);padding:0.95rem 3rem;border-radius:100px;font-family:var(--sans);font-size:0.78rem;letter-spacing:0.32em;cursor:pointer;text-transform:uppercase;font-weight:400;transition:all 0.5s var(--ease);backdrop-filter:blur(20px);animation:rise 1.8s 0.8s var(--ease) both;}
+.s-enter:hover{background:var(--glass-hover);color:var(--text);border-color:rgba(255,255,255,0.22);transform:translateY(-2px);}
+@keyframes rise{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+#app{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;opacity:0;transition:opacity 1.4s ease;pointer-events:none;}
+#app.on{opacity:1;pointer-events:all;}
+header{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 1.3rem) 1.5rem 0.8rem;flex:0 0 auto;z-index:30;}
+.h-mark{font-family:var(--serif);font-weight:300;font-size:0.95rem;letter-spacing:0.42em;text-indent:0.42em;color:var(--text-soft);}
+.h-btns{display:flex;gap:0.6rem;}
+.icon-btn{width:40px;height:40px;border-radius:50%;background:var(--glass);border:0.5px solid var(--glass-border);color:var(--text-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.05rem;transition:all 0.4s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.icon-btn:hover{background:var(--glass-hover);color:var(--text);}
+main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0.5rem 1.5rem 6rem;scrollbar-width:none;}
+main::-webkit-scrollbar{display:none;}
+.greeting{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(1.5rem,5vw,2.1rem);line-height:1.45;color:var(--text);margin:1.5rem 0 0.4rem;max-width:18ch;animation:rise 1s var(--ease) both;}
+.sub{font-size:0.92rem;color:var(--text-soft);line-height:1.6;max-width:30ch;font-weight:300;margin-bottom:2.2rem;animation:rise 1s 0.15s var(--ease) both;}
+.sec-label{font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--text-faint);margin:0.5rem 0 1.1rem;font-weight:500;}
+.feel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.85rem;margin-bottom:2.5rem;}
+.feel-card{position:relative;border-radius:22px;padding:1.4rem 1.3rem;min-height:128px;cursor:pointer;overflow:hidden;background:var(--glass);border:0.5px solid var(--glass-border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.5s var(--ease),border-color 0.5s var(--ease);animation:rise 0.9s var(--ease) both;}
+.feel-card:active{transform:scale(0.97);}
+.feel-card:hover{border-color:rgba(255,255,255,0.2);}
+.feel-card::before{content:"";position:absolute;inset:0;opacity:0.5;background:radial-gradient(circle at 30% 20%,var(--fc) 0%,transparent 70%);transition:opacity 0.5s;z-index:0;}
+.feel-card:hover::before{opacity:0.8;}
+.fc-dot{width:9px;height:9px;border-radius:50%;background:var(--fc);position:relative;z-index:1;box-shadow:0 0 16px var(--fc);}
+.fc-name{font-family:var(--serif);font-weight:400;font-size:1.18rem;color:var(--text);position:relative;z-index:1;line-height:1.2;}
+.fc-desc{font-size:0.74rem;color:var(--text-soft);line-height:1.45;position:relative;z-index:1;font-weight:300;margin-top:0.25rem;}
+#room{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:rgba(11,10,18,0.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity 0.8s var(--ease),visibility 0.8s;}
+#room.open{opacity:1;visibility:visible;}
+.room-head{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 1.3rem) 1.5rem 0.5rem;flex:0 0 auto;}
+.room-title{font-family:var(--serif);font-style:italic;font-weight:300;font-size:1.15rem;color:var(--text-soft);}
+.room-body{flex:1;overflow-y:auto;padding:1rem 1.6rem 7rem;scrollbar-width:none;}
+.room-body::-webkit-scrollbar{display:none;}
+.orb-wrap{display:flex;flex-direction:column;align-items:center;margin:1.5rem 0 2.5rem;}
+.orb{width:160px;height:160px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,var(--accent) 0%,transparent 72%);animation:breathe var(--bspeed,11s) ease-in-out infinite;}
+.orb::after{content:"";position:absolute;inset:0;border-radius:50%;border:0.5px solid rgba(255,255,255,0.14);animation:breathe var(--bspeed,11s) ease-in-out infinite;}
+@keyframes breathe{0%,100%{transform:scale(0.78);opacity:0.55;}45%{transform:scale(1.12);opacity:1;}55%{transform:scale(1.12);opacity:1;}}
+.orb-cue{font-family:var(--serif);font-style:italic;font-size:0.95rem;color:var(--text);z-index:2;transition:opacity 0.6s;}
+.orb-hint{font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-faint);margin-top:1.1rem;}
+.reframe{font-family:var(--serif);font-weight:300;font-size:clamp(1.25rem,4.4vw,1.7rem);line-height:1.55;color:var(--text);margin:0 auto 1.3rem;max-width:24ch;text-align:center;transition:opacity 0.7s var(--ease),transform 0.7s var(--ease);}
+.reframe.hide{opacity:0;transform:translateY(12px);}
+.reframe-nav{display:flex;align-items:center;justify-content:center;gap:1.4rem;margin-bottom:2.8rem;}
+.rn-btn{width:38px;height:38px;border-radius:50%;background:var(--glass);border:0.5px solid var(--glass-border);color:var(--text-soft);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.4s var(--ease);backdrop-filter:blur(12px);}
+.rn-btn:hover{background:var(--glass-hover);color:var(--text);}
+.rn-count{font-size:0.7rem;letter-spacing:0.18em;color:var(--text-faint);min-width:48px;text-align:center;}
+.ground-card{background:var(--glass);border:0.5px solid var(--glass-border);border-radius:20px;padding:1.5rem;margin-bottom:2.5rem;backdrop-filter:blur(20px);}
+.ground-title{font-size:0.66rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--text-faint);margin-bottom:1.1rem;font-weight:500;}
+.ground-step{display:flex;gap:0.9rem;align-items:flex-start;padding:0.7rem 0;border-bottom:0.5px solid rgba(255,255,255,0.05);}
+.ground-step:last-child{border-bottom:none;}
+.gs-num{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:1.1rem;flex:0 0 auto;line-height:1.4;opacity:0.8;}
+.gs-text{font-size:0.92rem;color:var(--text-soft);line-height:1.55;font-weight:300;}
+.journal-card{background:var(--glass);border:0.5px solid var(--glass-border);border-radius:20px;padding:1.5rem;margin-bottom:2rem;backdrop-filter:blur(20px);}
+.journal-prompt{font-family:var(--serif);font-style:italic;font-weight:300;font-size:1.05rem;color:var(--text);line-height:1.5;margin-bottom:1rem;}
+.journal-area{width:100%;min-height:130px;background:rgba(0,0,0,0.18);border:0.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:1rem;color:var(--text);font-family:var(--sans);font-size:0.95rem;line-height:1.65;font-weight:300;outline:none;resize:vertical;transition:border 0.4s;}
+.journal-area::placeholder{color:var(--text-faint);}
+.journal-area:focus{border-color:rgba(255,255,255,0.2);}
+.journal-foot{display:flex;align-items:center;justify-content:space-between;margin-top:0.9rem;}
+.journal-note{font-size:0.7rem;color:var(--text-faint);font-weight:300;}
+.journal-save{background:var(--glass);border:0.5px solid var(--glass-border);color:var(--text-soft);padding:0.55rem 1.4rem;border-radius:100px;cursor:pointer;font-family:var(--sans);font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;transition:all 0.4s var(--ease);}
+.journal-save:hover{background:var(--glass-hover);color:var(--text);}
+.sound-row{display:flex;gap:0.55rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.sound-chip{display:flex;align-items:center;gap:0.45rem;background:var(--glass);border:0.5px solid var(--glass-border);border-radius:100px;padding:0.55rem 1.05rem;cursor:pointer;font-size:0.8rem;color:var(--text-soft);font-weight:300;transition:all 0.4s var(--ease);backdrop-filter:blur(12px);}
+.sound-chip.on{background:rgba(255,255,255,0.13);color:var(--text);border-color:rgba(255,255,255,0.25);}
+.sc-dot{width:6px;height:6px;border-radius:50%;background:var(--text-faint);transition:all 0.3s;}
+.sound-chip.on .sc-dot{background:var(--accent);box-shadow:0 0 10px var(--accent);}
+.panel{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);opacity:0;visibility:hidden;transition:opacity 0.5s var(--ease),visibility 0.5s;}
+.panel.open{opacity:1;visibility:visible;}
+.sheet{width:min(540px,100%);max-height:85vh;overflow-y:auto;background:rgba(18,16,26,0.92);border:0.5px solid var(--glass-border);border-radius:28px 28px 0 0;padding:1.8rem 1.6rem 2.5rem;transform:translateY(40px);transition:transform 0.5s var(--ease);scrollbar-width:none;}
+.panel.open .sheet{transform:translateY(0);}
+.sheet::-webkit-scrollbar{display:none;}
+.sheet-handle{width:42px;height:4px;border-radius:2px;background:rgba(255,255,255,0.18);margin:0 auto 1.5rem;}
+.sheet-title{font-family:var(--serif);font-style:italic;font-weight:300;font-size:1.3rem;color:var(--text);margin-bottom:0.3rem;}
+.sheet-sub{font-size:0.82rem;color:var(--text-soft);font-weight:300;margin-bottom:1.6rem;}
+.snd-item{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 0;border-bottom:0.5px solid rgba(255,255,255,0.06);}
+.snd-item:last-child{border-bottom:none;}
+.snd-label{font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--text-soft);}
+.snd-ctrl{display:flex;align-items:center;gap:0.9rem;}
+.slider{-webkit-appearance:none;appearance:none;width:90px;height:2px;border-radius:2px;background:rgba(255,255,255,0.18);outline:none;cursor:pointer;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.slider::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;}
+.snd-tog{width:32px;height:32px;border-radius:50%;background:transparent;border:0.5px solid rgba(255,255,255,0.22);color:var(--text-soft);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.3s;}
+.snd-tog.on{background:rgba(255,255,255,0.16);color:var(--text);border-color:rgba(255,255,255,0.4);}
+.edit-field{margin-bottom:1.5rem;}
+.edit-label{font-size:0.66rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--text-faint);margin-bottom:0.55rem;display:block;font-weight:500;}
+.edit-input,.edit-ta{width:100%;background:rgba(0,0,0,0.2);border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:0.75rem 1rem;color:var(--text);font-family:var(--sans);font-size:0.92rem;font-weight:300;outline:none;resize:vertical;transition:border 0.4s;line-height:1.6;}
+.edit-input:focus,.edit-ta:focus{border-color:rgba(255,255,255,0.25);}
+.edit-ta{min-height:120px;}
+.btn-primary{width:100%;background:rgba(255,255,255,0.14);border:0.5px solid rgba(255,255,255,0.25);border-radius:14px;padding:0.9rem;color:var(--text);font-family:var(--sans);font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;transition:all 0.4s var(--ease);margin-top:0.4rem;}
+.btn-primary:hover{background:rgba(255,255,255,0.22);}
+.btn-ghost{width:100%;background:none;border:none;padding:0.8rem;color:var(--text-faint);font-family:var(--sans);font-size:0.74rem;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;}
+#toast{position:fixed;bottom:7.5rem;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(255,255,255,0.1);border:0.5px solid var(--glass-border);border-radius:100px;padding:0.6rem 1.5rem;font-family:var(--serif);font-style:italic;font-size:0.92rem;color:var(--text);backdrop-filter:blur(20px);z-index:90;opacity:0;transition:all 0.5s var(--ease);pointer-events:none;text-align:center;max-width:80vw;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.sos{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 1.5rem);left:50%;transform:translateX(-50%);z-index:35;background:var(--glass);border:0.5px solid var(--glass-border);border-radius:100px;padding:0.8rem 1.8rem;color:var(--text-soft);font-family:var(--sans);font-size:0.74rem;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(24px);transition:all 0.4s var(--ease);display:flex;align-items:center;gap:0.5rem;}
+.sos:hover{background:var(--glass-hover);color:var(--text);}
+.sos-dot{width:7px;height:7px;border-radius:50%;background:#e8a0a0;box-shadow:0 0 12px #e8a0a0;animation:pulse 2.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:0.5;}50%{opacity:1;}}
+@media(min-width:560px){.feel-grid{grid-template-columns:repeat(3,1fr);}}
 </style>
 </head>
 <body>
-
-<!-- BACKGROUND CANVAS -->
-<canvas id="bg"></canvas>
-
-<!-- ROOM COLOUR OVERLAY -->
-<div id="room-overlay"></div>
-
-<!-- BREATHING RING -->
-<div id="breathe-wrap"><div id="breathe-ring"></div></div>
-
-<!-- SPLASH -->
+<div id="aura"><div class="blob" id="b1"></div><div class="blob" id="b2"></div><div class="blob" id="b3"></div></div>
+<canvas id="grain"></canvas>
+<div id="vignette"></div>
 <div id="splash">
-  <div class="splash-word">Still</div>
-  <div class="splash-sub">a space to breathe</div>
-  <button class="splash-enter" onclick="enter()">Enter</button>
+  <div class="s-mark">STILL</div>
+  <div class="s-line">A quiet place for the parts of you that learned to brace.</div>
+  <button class="s-enter" onclick="enter()">Come in</button>
 </div>
-
-<!-- TOAST -->
 <div id="toast"></div>
-
-<!-- APP -->
 <div id="app">
-
-  <!-- TOP CONTROLS -->
-  <div id="controls">
-    <button class="ctrl-btn" onclick="openSound()" title="Sounds">♬</button>
-    <div id="logo">Still</div>
-    <button class="ctrl-btn" onclick="openEdit()" title="Customise">✦</button>
-  </div>
-
-  <!-- QUOTE -->
-  <div id="quote-wrap">
-    <div id="quote-text"></div>
-    <div id="quote-attr"></div>
-  </div>
-
-  <!-- QUOTE NAVIGATION -->
-  <div id="quote-nav">
-    <button class="qnav-btn" onclick="prevQuote()">‹</button>
-    <div id="quote-dots"></div>
-    <button class="qnav-btn" onclick="nextQuote()">›</button>
-  </div>
-
-  <!-- ROOMS BAR -->
-  <div id="rooms-bar">
-    <div id="rooms-scroll"></div>
-  </div>
-
+  <header>
+    <div class="h-mark" id="hmark">STILL</div>
+    <div class="h-btns">
+      <button class="icon-btn" onclick="openSound()" title="Sound">&#9834;</button>
+      <button class="icon-btn" onclick="openEdit()" title="Customise">&#10022;</button>
+    </div>
+  </header>
+  <main id="home">
+    <div class="greeting" id="greeting"></div>
+    <div class="sub" id="subline"></div>
+    <div class="sec-label">What's here right now?</div>
+    <div class="feel-grid" id="feelGrid"></div>
+  </main>
+  <button class="sos" onclick="openSOS()"><span class="sos-dot"></span> I'm spiralling</button>
 </div>
-
-<!-- SOUND PANEL -->
-<div id="sound-panel">
-  <div class="panel-card">
-    <div class="panel-title">Soundscape</div>
-    <div id="sound-list"></div>
-    <button class="panel-close" onclick="closeSound()">Close</button>
+<div id="room">
+  <div class="room-head">
+    <div class="room-title" id="roomTitle"></div>
+    <button class="icon-btn" onclick="closeRoom()">&#10005;</button>
+  </div>
+  <div class="room-body" id="roomBody"></div>
+</div>
+<div class="panel" id="soundPanel">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Soundscape</div>
+    <div class="sheet-sub">Layer what your body needs. Mix freely.</div>
+    <div id="soundList"></div>
+    <button class="btn-primary" style="margin-top:1.5rem;" onclick="closeSound()">Done</button>
   </div>
 </div>
-
-<!-- EDIT PANEL -->
-<div id="edit-panel">
-  <div class="edit-card">
-    <div class="edit-section">
-      <span class="edit-label">App name</span>
-      <input class="edit-input" id="e-name" type="text" placeholder="STILL">
-    </div>
-    <div class="edit-section">
-      <span class="edit-label">Quotes — one per line (text | Author)</span>
-      <textarea class="edit-textarea" id="e-quotes" style="min-height:160px"></textarea>
-    </div>
-    <div class="edit-section">
-      <span class="edit-label">Rooms — one per line (Emoji | Name | Color hex)</span>
-      <textarea class="edit-textarea" id="e-rooms" style="min-height:130px"></textarea>
-    </div>
-    <div class="edit-section">
-      <span class="edit-label">Breathing ring speed</span>
-      <div style="display:flex;align-items:center;gap:1rem;">
-        <input type="range" class="vol-slider" style="width:100%;" id="e-breathe" min="4" max="20" step="1">
-        <span id="e-breathe-val" style="color:#ffffff88;font-size:0.85rem;min-width:2rem;"></span>
-      </div>
-    </div>
-    <div class="edit-section">
-      <span class="edit-label">Your message to visitors</span>
-      <input class="edit-input" id="e-msg" type="text" placeholder="You are safe here.">
-    </div>
-    <button class="edit-save" onclick="saveEdit()">Save changes</button>
-    <button class="edit-cancel" onclick="closeEdit()">Cancel</button>
+<div class="panel" id="editPanel">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Make it yours</div>
+    <div class="sheet-sub">For you, or for someone you love. Nothing leaves this device.</div>
+    <div class="edit-field"><span class="edit-label">Name</span><input class="edit-input" id="eName" type="text" placeholder="STILL"></div>
+    <div class="edit-field"><span class="edit-label">Welcome line</span><input class="edit-input" id="eWelcome" type="text"></div>
+    <div class="edit-field"><span class="edit-label">Breathing pace (seconds per breath)</span>
+      <div style="display:flex;align-items:center;gap:1rem;"><input type="range" class="slider" style="width:100%;" id="eBreathe" min="6" max="18" step="1"><span id="eBreatheVal" style="color:var(--text-soft);font-size:0.85rem;min-width:2.5rem;"></span></div></div>
+    <div class="edit-field"><span class="edit-label">Add your own reframes &mdash; one per line</span><textarea class="edit-ta" id="eReframes" placeholder="Something you needed to hear..."></textarea></div>
+    <button class="btn-primary" onclick="saveEdit()">Save</button>
+    <button class="btn-ghost" onclick="clearData()">Reset to defaults</button>
+    <button class="btn-ghost" onclick="closeEdit()">Close</button>
   </div>
 </div>
-
 <script>
-/* ═══════════════════════════════════════════════
-   STILL — Core App
-   All customisation stored in localStorage.
-   No backend. No API. Pure browser.
-═══════════════════════════════════════════════ */
-
-/* ── DEFAULTS ── */
-const DEFAULTS = {
-  appName: 'Still',
-  welcomeMsg: 'You are safe here.',
-  breatheSpeed: 8,
-  rooms: [
-    { icon:'🌊', name:'Ocean',   color:'#0d2b45', particle:'rgba(100,180,255,0.15)' },
-    { icon:'🌿', name:'Forest',  color:'#0d1f15', particle:'rgba(100,200,120,0.13)' },
-    { icon:'🌙', name:'Night',   color:'#080818', particle:'rgba(150,130,255,0.12)' },
-    { icon:'☀️', name:'Dawn',    color:'#2a1510', particle:'rgba(255,180,80,0.12)'  },
-    { icon:'🌸', name:'Bloom',   color:'#1e0f1a', particle:'rgba(255,150,200,0.13)' },
-    { icon:'❄️', name:'Frost',   color:'#0e1825', particle:'rgba(180,220,255,0.14)' },
-    { icon:'🔥', name:'Ember',   color:'#1a0b00', particle:'rgba(255,120,40,0.13)'  },
-    { icon:'⛅', name:'Cloud',   color:'#12151a', particle:'rgba(200,200,220,0.1)'  },
-  ],
-  quotes: [
-    { text:'You do not have to be good.', attr:'Mary Oliver' },
-    { text:'Breathing in, I calm body and mind. Breathing out, I smile.', attr:'Thich Nhat Hanh' },
-    { text:'Rest is not idle. Rest is the thing that allows the next moment.', attr:'' },
-    { text:'Be still and know.', attr:'Psalm 46:10' },
-    { text:'The present moment is the only moment available to us.', attr:'Thich Nhat Hanh' },
-    { text:'Even if you cannot change all the people around you, you can change the people you choose to be around.', attr:'James Baldwin' },
-    { text:'Nothing is so strong as gentleness, nothing so gentle as real strength.', attr:'St. Francis de Sales' },
-    { text:'You are allowed to be both a masterpiece and a work in progress.', attr:'Sophia Bush' },
-    { text:'What you seek is seeking you.', attr:'Rumi' },
-    { text:'Let yourself be silently drawn by the strange pull of what you really love.', attr:'Rumi' },
-    { text:'Peace is this moment without judgement.', attr:'Dorothy Hunt' },
-    { text:'In the middle of difficulty lies opportunity.', attr:'Albert Einstein' },
-    { text:'The wound is the place where the Light enters you.', attr:'Rumi' },
-    { text:'You don\'t have to see the whole staircase, just take the first step.', attr:'Martin Luther King Jr.' },
-    { text:'Almost everything will work again if you unplug it for a few minutes — including you.', attr:'Anne Lamott' },
-  ]
-};
-
-/* ── STATE ── */
-let state = loadState();
-let currentRoom = 0;
-let currentQuote = 0;
-let particles = [];
-let audioCtx = null;
-let sounds = {};
-let soundNodes = {};
-let animFrame;
-
-/* ── LOAD/SAVE ── */
-function loadState(){
-  try {
-    const s = JSON.parse(localStorage.getItem('still_v3') || '{}');
-    return {
-      appName:     s.appName     || DEFAULTS.appName,
-      welcomeMsg:  s.welcomeMsg  || DEFAULTS.welcomeMsg,
-      breatheSpeed:s.breatheSpeed|| DEFAULTS.breatheSpeed,
-      rooms:       s.rooms       || DEFAULTS.rooms,
-      quotes:      s.quotes      || DEFAULTS.quotes,
-    };
-  } catch(e){ return {...DEFAULTS}; }
-}
-function saveState(){
-  localStorage.setItem('still_v3', JSON.stringify(state));
-}
-
-/* ── AUDIO ENGINE ── */
-const SOUNDSCAPES = [
-  { id:'rain',  label:'Rain',      freq:null, type:'rain'   },
-  { id:'ocean', label:'Ocean',     freq:null, type:'ocean'  },
-  { id:'fire',  label:'Fire',      freq:null, type:'fire'   },
-  { id:'wind',  label:'Wind',      freq:null, type:'wind'   },
-  { id:'bells', label:'Bells',     freq:432,  type:'tone'   },
-  { id:'drone', label:'Drone',     freq:110,  type:'drone'  },
+const FEELINGS = [
+  {id:'anxious',name:'Anxious',color:'#d9a574',desc:"My body won't settle",aura:['#3a2e1a','#2a2438','#3a1a1a'],accent:'#e8c89a',title:'When the body keeps bracing',
+   reframes:["Your nervous system is not broken. It learned to stay ready in a place that was never safe. It is doing its old job. You are allowed to teach it a new one.","The fear in your chest is old. It belongs to a younger you who had no choice. You have choices now, even small ones.","You do not have to calm down right now. You only have to notice that, in this exact moment, nothing is on fire.","Hypervigilance kept you safe once. Thank it. Then let your shoulders drop one millimetre.","Anxiety is not a prophecy. It is a body remembering, not a future arriving."],
+   ground:{title:'5\u20134\u20133\u20132\u20131, slowly',steps:["Name 5 things you can see in this room. Out loud, if you can.","4 things you can physically feel \u2014 the chair, your feet, the fabric.","3 things you can hear, even faint ones.","2 things you can smell, or two slow breaths if you can't.","1 thing that is true and kind. \"I am here. This will pass.\""]},
+   journal:"What is my body afraid is about to happen \u2014 and is it happening right now, in this room?"},
+  {id:'heavy',name:'Heavy',color:'#7a8db0',desc:'I feel weighed down',aura:['#1a2438','#22283a','#1c1e2e'],accent:'#a8b8d8',title:'When everything feels like too much',
+   reframes:["Heaviness is not laziness. You have been carrying something invisible, and carrying is work. Of course you are tired.","You learned to function while drowning. That you are still here is not nothing. It is almost everything.","Rest is not a reward you earn after you are okay. Rest is part of how you get okay.","You do not have to fix your whole life tonight. You only have to make it to morning. That counts.","The weight you feel is real, even if no one around you can see it. You are not exaggerating."],
+   ground:{title:'Just the next small thing',steps:["Drink one glass of water. That's the whole task.","Open a window or change the light in the room.","Put one thing back in its place. Just one.","Lie down for ten minutes with no goal. Not sleep. Just lying down.","Tell yourself: I did three things today. That is enough."]},
+   journal:"If I let myself be honest, what have I been carrying that nobody knows about?"},
+  {id:'unworthy',name:'Not enough',color:'#c98ba8',desc:'The shame is loud',aura:['#2a1828','#321e2e','#241624'],accent:'#e0a8c8',title:"When the voice says you're not enough",
+   reframes:["The voice telling you that you are not enough is not your voice. It is an echo of someone who could not give you what you needed. You can stop repeating their lines.","You were a child who adapted to survive love that came with conditions. The conditions were the problem. Not you.","You do not have to be impressive to deserve rest, care, or gentleness. You deserved those things at birth, freely.","Shame says \"I am bad.\" Guilt says \"I did something bad.\" Most of what you carry is not even yours to carry.","You are not too much. You were handed to people who could not hold what you are."],
+   ground:{title:'Speak to yourself like someone you love',steps:["Put a hand on your chest. Feel the warmth of your own palm.","Say your own name, gently, the way a kind friend would.","Finish this out loud: \"It makes sense that I feel this way, because\u2026\"","Now say: \"And none of that means I am unlovable.\"","Breathe. You just did something the harsh voice never lets you do."]},
+   journal:"Whose voice is the shame really using? And what would I say back to them now?"},
+  {id:'lonely',name:'Lonely',color:'#8b9bc9',desc:'I feel unseen',aura:['#1a2040','#262a48','#1e2238'],accent:'#aab8e0',title:'When no one feels close',
+   reframes:["Loneliness after a hard childhood is not a flaw in you. You were taught that closeness was dangerous, then blamed for keeping your distance.","You are not too needy. You are someone whose needs were ignored for so long that having any feels like too much.","Being alone and being unloved are not the same thing. Right now you are alone. That is temporary.","The people who could not see you were looking with broken eyes. Your invisibility was their limitation, not your worth.","You can be your own company tonight. Not as a consolation, but as a beginning."],
+   ground:{title:'Gentle contact',steps:["Wrap yourself in something warm \u2014 a blanket, a hoodie, a heavy thing.","Make a warm drink and hold the cup in both hands.","Send one low-stakes message to one person. \"Thinking of you\" is enough.","If that's too much, write the message and don't send it. The reaching still counts.","Remember one person, alive or not, who was glad you existed."]},
+   journal:"What kind of being-seen am I longing for \u2014 and what is the smallest version of it I could give myself tonight?"},
+  {id:'guilty',name:'Guilty',color:'#a8b078',desc:'I feel like I owe everyone',aura:['#26281a','#2e2a1e','#222418'],accent:'#c8d098',title:'When you were made responsible for everyone',
+   reframes:["You learned to read every room and manage every mood because your safety depended on it. That is not kindness. That is a survival skill, and you are allowed to put it down.","Saying no does not make you cruel. It makes you a person with a self. You were trained to forget you had one.","Their disappointment is not proof you did wrong. Sometimes it is proof you finally stopped abandoning yourself.","You are not responsible for managing the feelings of grown adults. You were never supposed to be.","The guilt you feel when you rest is a debt that was never really yours. You can let it go unpaid."],
+   ground:{title:'Returning to yourself',steps:["Notice one thing you want right now that has nothing to do with anyone else.","Ask: \"Is this guilt mine, or was it handed to me?\"","Picture setting down a heavy bag you've been carrying for someone else.","Say out loud: \"I am allowed to disappoint people and still be good.\"","Do one small thing purely because you want to, not because it earns anything."]},
+   journal:"Where in my life am I still trying to earn a love that should have been free?"},
+  {id:'numb',name:'Numb',color:'#9098a0',desc:"I can't feel anything",aura:['#1e2024','#26282c','#1a1c20'],accent:'#b8c0c8',title:"When you've gone quiet inside",
+   reframes:["Numbness is not emptiness. It is a circuit breaker. When feeling became unbearable, your mind learned to dim the lights to protect you.","You are not cold or broken. You are someone whose feelings were too dangerous to have, so you learned to feel nothing instead.","You do not have to force the feeling back. The thaw comes on its own, gently, when the body decides it is safe.","Going through the motions is not failure. Some seasons, the motions are the whole victory.","The fact that you want to feel something again means the part of you that feels is still alive in there."],
+   ground:{title:'Waking the senses, gently',steps:["Hold something cold \u2014 an ice cube, a cold glass \u2014 just for a moment.","Press your feet firmly into the floor. Notice the pressure.","Listen to one song you loved years ago and just notice if anything stirs.","Stretch your arms above your head, slowly, like waking up.","No pressure to feel. You are just leaving the door open."]},
+   journal:"If the numbness could speak, what would it say it's protecting me from?"},
 ];
-
-let soundState = {};
-SOUNDSCAPES.forEach(s=>{ soundState[s.id]={on:false,vol:0.3}; });
-
-function initAudio(){
-  if(audioCtx) return;
-  audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-}
-
-function makeNoise(type, vol){
-  if(!audioCtx) return null;
-  const bufSize = audioCtx.sampleRate * 4;
-  const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
-  const data = buf.getChannelData(0);
-  for(let i=0;i<bufSize;i++) data[i] = Math.random()*2-1;
-
-  const src = audioCtx.createBufferSource();
-  src.buffer = buf;
-  src.loop = true;
-
-  const gain = audioCtx.createGain();
-  gain.gain.value = vol;
-
-  let filter;
-  if(type==='rain'){
-    filter = audioCtx.createBiquadFilter();
-    filter.type='bandpass';filter.frequency.value=2000;filter.Q.value=0.3;
-    src.connect(filter);filter.connect(gain);
-  } else if(type==='ocean'){
-    filter = audioCtx.createBiquadFilter();
-    filter.type='lowpass';filter.frequency.value=800;
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-    lfo.frequency.value=0.08;lfoGain.gain.value=400;
-    lfo.connect(lfoGain);lfoGain.connect(filter.frequency);
-    lfo.start();
-    src.connect(filter);filter.connect(gain);
-  } else if(type==='fire'){
-    filter = audioCtx.createBiquadFilter();
-    filter.type='lowpass';filter.frequency.value=600;filter.Q.value=0.5;
-    src.connect(filter);filter.connect(gain);
-  } else if(type==='wind'){
-    filter = audioCtx.createBiquadFilter();
-    filter.type='bandpass';filter.frequency.value=400;filter.Q.value=0.2;
-    src.connect(filter);filter.connect(gain);
-  } else {
-    src.connect(gain);
-  }
-  gain.connect(audioCtx.destination);
-  src.start();
-  return {src,gain};
-}
-
-function makeTone(freq, vol, type='sine'){
-  if(!audioCtx) return null;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  const rev = audioCtx.createConvolver();
-  osc.frequency.value = freq;
-  osc.type = type;
-  gain.gain.value = vol * 0.3;
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-  return {src:osc,gain};
-}
-
-function makeDrone(freq, vol){
-  if(!audioCtx) return null;
-  const nodes = [];
-  [1,2,3,5].forEach((mult,i)=>{
-    const osc = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    osc.frequency.value = freq * mult;
-    osc.type = i===0?'sine':'triangle';
-    g.gain.value = vol * (0.4 / (i+1));
-    osc.connect(g);g.connect(audioCtx.destination);
-    osc.start();
-    nodes.push({src:osc,gain:g});
-  });
-  return nodes;
-}
-
-function toggleSound(id){
-  initAudio();
-  const ss = soundState[id];
-  const sc = SOUNDSCAPES.find(s=>s.id===id);
-  if(!ss.on){
-    ss.on=true;
-    if(sc.type==='rain'||sc.type==='ocean'||sc.type==='fire'||sc.type==='wind'){
-      soundNodes[id] = makeNoise(sc.type, ss.vol);
-    } else if(sc.type==='tone'){
-      soundNodes[id] = makeTone(sc.freq, ss.vol);
-    } else if(sc.type==='drone'){
-      soundNodes[id] = makeDrone(sc.freq, ss.vol);
-    }
-  } else {
-    ss.on=false;
-    const n = soundNodes[id];
-    if(n){
-      const kill = arr => (arr||[]).forEach(x=>{ try{x.src.stop();}catch(e){} });
-      if(Array.isArray(n)) kill(n);
-      else try{n.src.stop();}catch(e){}
-      soundNodes[id]=null;
-    }
-  }
-  renderSoundPanel();
-}
-
-function setVol(id, val){
-  soundState[id].vol = val;
-  const n = soundNodes[id];
-  if(n){
-    if(Array.isArray(n)) n.forEach(x=>{ x.gain.gain.setTargetAtTime(val*0.4/(n.indexOf(x)+1),audioCtx.currentTime,0.1); });
-    else n.gain.gain.setTargetAtTime(val,audioCtx.currentTime,0.1);
-  }
-}
-
-/* ── CANVAS PARTICLES ── */
-function initCanvas(){
-  const c = document.getElementById('bg');
-  const ctx = c.getContext('2d');
-  function resize(){c.width=innerWidth;c.height=innerHeight;}
-  resize();
-  window.addEventListener('resize',resize);
-
-  particles=[];
-  const room = state.rooms[currentRoom]||state.rooms[0];
-  const pColor = room.particle||'rgba(255,255,255,0.1)';
-
-  for(let i=0;i<60;i++){
-    particles.push({
-      x:Math.random()*innerWidth,
-      y:Math.random()*innerHeight,
-      r:Math.random()*2+0.5,
-      vx:(Math.random()-0.5)*0.2,
-      vy:(Math.random()-0.5)*0.15,
-      o:Math.random()*0.6+0.1,
-      po:Math.random()*Math.PI*2,
-    });
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,c.width,c.height);
-    const room2 = state.rooms[currentRoom]||state.rooms[0];
-    const pc = room2.particle||'rgba(255,255,255,0.1)';
-
-    particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.po+=0.008;
-      if(p.x<-10) p.x=c.width+10;
-      if(p.x>c.width+10) p.x=-10;
-      if(p.y<-10) p.y=c.height+10;
-      if(p.y>c.height+10) p.y=-10;
-      const op = (Math.sin(p.po)+1)/2 * p.o;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle = pc.replace(/[\d.]+\)$/,`${op.toFixed(2)})`);
-      ctx.fill();
-    });
-    animFrame = requestAnimationFrame(draw);
-  }
-  if(animFrame) cancelAnimationFrame(animFrame);
-  draw();
-}
-
-/* ── ROOM SWITCHING ── */
-function switchRoom(idx){
-  currentRoom = idx;
-  const room = state.rooms[idx]||state.rooms[0];
-
-  document.getElementById('room-overlay').style.background =
-    `radial-gradient(ellipse at 50% 60%, ${room.color}cc 0%, transparent 80%)`;
-
-  document.body.style.background = room.color;
-
-  document.querySelectorAll('.room-btn').forEach((b,i)=>{
-    b.classList.toggle('active', i===idx);
-  });
-}
-
-/* ── QUOTES ── */
-function showQuote(idx){
-  const q = state.quotes[idx];
-  if(!q) return;
-  const qt = document.getElementById('quote-text');
-  const qa = document.getElementById('quote-attr');
-  qt.classList.add('hidden'); qa.classList.add('hidden');
-  setTimeout(()=>{
-    qt.textContent = q.text||'';
-    qa.textContent = q.attr ? `— ${q.attr}` : '';
-    qt.classList.remove('hidden'); qa.classList.remove('hidden');
-  }, 350);
-  renderDots();
-}
-
-function nextQuote(){
-  currentQuote = (currentQuote+1)%state.quotes.length;
-  showQuote(currentQuote);
-}
-function prevQuote(){
-  currentQuote = (currentQuote-1+state.quotes.length)%state.quotes.length;
-  showQuote(currentQuote);
-}
-
-function renderDots(){
-  const container = document.getElementById('quote-dots');
-  const max = Math.min(state.quotes.length,7);
-  container.innerHTML='';
-  for(let i=0;i<max;i++){
-    const d=document.createElement('div');
-    d.className='qdot'+(i===currentQuote%max?' active':'');
-    container.appendChild(d);
-  }
-}
-
-/* ── ROOMS BAR ── */
-function renderRooms(){
-  const bar = document.getElementById('rooms-scroll');
-  bar.innerHTML='';
-  state.rooms.forEach((r,i)=>{
-    const btn=document.createElement('button');
-    btn.className='room-btn'+(i===currentRoom?' active':'');
-    btn.innerHTML=`<span class="room-icon">${r.icon}</span><span class="room-name">${r.name}</span>`;
-    btn.onclick=()=>switchRoom(i);
-    bar.appendChild(btn);
-  });
-}
-
-/* ── SOUND PANEL ── */
-function renderSoundPanel(){
-  const list = document.getElementById('sound-list');
-  list.innerHTML='';
-  SOUNDSCAPES.forEach(sc=>{
-    const ss=soundState[sc.id];
-    const row=document.createElement('div');
-    row.className='sound-item';
-    row.innerHTML=`
-      <span class="sound-label">${sc.label}</span>
-      <div class="sound-controls">
-        <input type="range" class="vol-slider" min="0" max="1" step="0.01" value="${ss.vol}"
-          oninput="setVol('${sc.id}',parseFloat(this.value))">
-        <button class="sound-toggle${ss.on?' on':''}" onclick="toggleSound('${sc.id}')">${ss.on?'◼':'▶'}</button>
-      </div>`;
-    list.appendChild(row);
-  });
-}
-function openSound(){ renderSoundPanel(); document.getElementById('sound-panel').classList.add('open'); }
-function closeSound(){ document.getElementById('sound-panel').classList.remove('open'); }
-
-/* ── EDIT PANEL ── */
-function openEdit(){
-  document.getElementById('e-name').value = state.appName;
-  document.getElementById('e-quotes').value = state.quotes.map(q=>q.attr?`${q.text} | ${q.attr}`:q.text).join('\n');
-  document.getElementById('e-rooms').value = state.rooms.map(r=>`${r.icon} | ${r.name} | ${r.color}`).join('\n');
-  document.getElementById('e-msg').value = state.welcomeMsg;
-  const bSlider = document.getElementById('e-breathe');
-  bSlider.value = state.breatheSpeed;
-  document.getElementById('e-breathe-val').textContent = state.breatheSpeed+'s';
-  bSlider.oninput = function(){ document.getElementById('e-breathe-val').textContent=this.value+'s'; };
-  document.getElementById('edit-panel').classList.add('open');
-}
-function closeEdit(){ document.getElementById('edit-panel').classList.remove('open'); }
-
-function saveEdit(){
-  const name = document.getElementById('e-name').value.trim() || 'Still';
-  const qRaw = document.getElementById('e-quotes').value.split('\n').filter(l=>l.trim());
-  const quotes = qRaw.map(l=>{
-    const parts = l.split('|'); return {text:parts[0].trim(), attr:(parts[1]||'').trim()};
-  }).filter(q=>q.text);
-
-  const rRaw = document.getElementById('e-rooms').value.split('\n').filter(l=>l.trim());
-  const rooms = rRaw.map(l=>{
-    const p = l.split('|');
-    const icon = (p[0]||'🌙').trim();
-    const rname = (p[1]||'Room').trim();
-    const color = (p[2]||'#0a0a0f').trim();
-    const hsl = hexToHsl(color);
-    const particle = `hsla(${hsl.h},${hsl.s}%,70%,0.13)`;
-    return {icon,name:rname,color,particle};
-  }).filter(r=>r.name);
-
-  state.appName = name;
-  state.quotes = quotes.length ? quotes : DEFAULTS.quotes;
-  state.rooms = rooms.length ? rooms : DEFAULTS.rooms;
-  state.welcomeMsg = document.getElementById('e-msg').value.trim() || DEFAULTS.welcomeMsg;
-  state.breatheSpeed = parseInt(document.getElementById('e-breathe').value)||8;
-
-  document.getElementById('logo').textContent = name;
-  document.title = name;
-  document.querySelector('.breathe-ring') && (document.getElementById('breathe-ring').style.animationDuration = state.breatheSpeed+'s');
-
-  saveState();
-  renderRooms();
-  currentRoom = Math.min(currentRoom, state.rooms.length-1);
-  switchRoom(currentRoom);
-  currentQuote = 0;
-  showQuote(0);
-  closeEdit();
-  toast('Saved ✦');
-}
-
-function hexToHsl(hex){
-  let r=0,g=0,b=0;
-  if(hex.length===4){hex='#'+hex[1]+hex[1]+hex[2]+hex[2]+hex[3]+hex[3];}
-  r=parseInt(hex.slice(1,3),16)/255;
-  g=parseInt(hex.slice(3,5),16)/255;
-  b=parseInt(hex.slice(5,7),16)/255;
-  const max=Math.max(r,g,b),min=Math.min(r,g,b);
-  let h=0,s=0,l=(max+min)/2;
-  if(max!==min){
-    const d=max-min; s=l>0.5?d/(2-max-min):d/(max+min);
-    if(max===r) h=(g-b)/d+(g<b?6:0);
-    else if(max===g) h=(b-r)/d+2;
-    else h=(r-g)/d+4;
-    h/=6;
-  }
-  return {h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
-}
-
-/* ── TOAST ── */
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
-}
-
-/* ── AUTO QUOTE CYCLE ── */
-let quoteTimer;
-function startQuoteCycle(){
-  clearInterval(quoteTimer);
-  quoteTimer = setInterval(nextQuote, 18000);
-}
-
-/* ── KEYBOARD ── */
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key==='ArrowDown') nextQuote();
-  if(e.key==='ArrowLeft'||e.key==='ArrowUp') prevQuote();
-  if(e.key==='Escape'){ closeSound(); closeEdit(); }
-  if(e.key==' ') { e.preventDefault(); nextQuote(); }
-});
-
-/* ── SWIPE ── */
-let tx=0;
-document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
-document.addEventListener('touchend',e=>{
-  const dx=e.changedTouches[0].clientX-tx;
-  if(Math.abs(dx)>50){ if(dx>0) prevQuote(); else nextQuote(); }
-},{passive:true});
-
-/* ── ENTER ── */
-function enter(){
-  initAudio();
-  document.getElementById('splash').classList.add('gone');
-  const app=document.getElementById('app');
-  app.classList.add('active');
-  initCanvas();
-  toast(state.welcomeMsg);
-  startQuoteCycle();
-}
-
-/* ── INIT ── */
-(function init(){
-  document.getElementById('logo').textContent = state.appName;
-  document.title = state.appName;
-  document.getElementById('breathe-ring').style.animationDuration = state.breatheSpeed+'s';
-  renderRooms();
-  switchRoom(0);
-  showQuote(0);
-})();
-
-/* ── SERVICE WORKER registration (skip if no sw.js) ── */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
-}
+const SOUNDSCAPES=[{id:'rain',label:'Rain',type:'rain'},{id:'ocean',label:'Ocean',type:'ocean'},{id:'wind',label:'Wind',type:'wind'},{id:'fire',label:'Fire',type:'fire'},{id:'drone',label:'Warm drone',type:'drone'},{id:'bells',label:'432 Hz',type:'tone',freq:432}];
+const SOS_STEPS=["Stop. You don't have to do anything for the next sixty seconds.","Put both feet flat on the ground. Feel the floor hold you.","Breathe out longer than you breathe in. Out for six, in for four.","Look around. You are not in the past. You are here, now, in this room.","Whatever set this off, it does not get to decide how tonight ends.","This wave will crest and fall. They always do. Stay with me."];
+let state=loadState(),activeFeeling=null,reframeIdx=0,audioCtx=null,soundNodes={},soundState={};
+SOUNDSCAPES.forEach(s=>soundState[s.id]={on:false,vol:0.35});
+function loadState(){try{const s=JSON.parse(localStorage.getItem('still_v4')||'{}');return{name:s.name||'STILL',welcome:s.welcome||'A quiet place for the parts of you that learned to brace.',breathe:s.breathe||11,custom:s.custom||[],journals:s.journals||{}};}catch(e){return{name:'STILL',welcome:'',breathe:11,custom:[],journals:{}};}}
+function saveState(){localStorage.setItem('still_v4',JSON.stringify(state));}
+function greeting(){const h=new Date().getHours();if(h>=22||h<5)return"It's late, and you're still awake.";if(h<12)return'You made it to morning.';if(h<17)return'However today is going,';return'The evening is yours now.';}
+function renderHome(){document.getElementById('greeting').textContent=greeting();document.getElementById('subline').textContent="You don't have to explain yourself here. Just tell me what's present.";document.getElementById('hmark').textContent=state.name;const grid=document.getElementById('feelGrid');grid.innerHTML='';FEELINGS.forEach((f,i)=>{const card=document.createElement('div');card.className='feel-card';card.style.setProperty('--fc',f.color);card.style.animationDelay=(0.1+i*0.06)+'s';card.innerHTML='<div class="fc-dot"></div><div><div class="fc-name">'+f.name+'</div><div class="fc-desc">'+f.desc+'</div></div>';card.onclick=()=>openRoom(f);grid.appendChild(card);});}
+function applyAura(f){document.documentElement.style.setProperty('--aura-1',f.aura[0]);document.documentElement.style.setProperty('--aura-2',f.aura[1]);document.documentElement.style.setProperty('--aura-3',f.aura[2]);document.documentElement.style.setProperty('--accent',f.accent);}
+function openRoom(f){activeFeeling=f;reframeIdx=0;applyAura(f);document.documentElement.style.setProperty('--bspeed',state.breathe+'s');document.getElementById('roomTitle').textContent=f.title;const allReframes=[...f.reframes,...state.custom];const body=document.getElementById('roomBody');const savedJournal=state.journals[f.id]||'';
+  body.innerHTML='<div class="orb-wrap"><div class="orb"><div class="orb-cue" id="orbCue">breathe in</div></div><div class="orb-hint">follow the light</div></div>'+
+    '<div class="reframe" id="reframe">'+allReframes[0]+'</div>'+
+    '<div class="reframe-nav"><button class="rn-btn" onclick="navReframe(-1)">&lsaquo;</button><span class="rn-count" id="rnCount">1 / '+allReframes.length+'</span><button class="rn-btn" onclick="navReframe(1)">&rsaquo;</button></div>'+
+    '<div class="sound-row" id="roomSounds"></div>'+
+    '<div class="ground-card"><div class="ground-title">'+f.ground.title+'</div>'+f.ground.steps.map((s,i)=>'<div class="ground-step"><span class="gs-num">'+(i+1)+'</span><span class="gs-text">'+s+'</span></div>').join('')+'</div>'+
+    '<div class="journal-card"><div class="journal-prompt">'+f.journal+'</div><textarea class="journal-area" id="journalArea" placeholder="No one reads this but you...">'+savedJournal+'</textarea><div class="journal-foot"><span class="journal-note">Saved only on this device</span><button class="journal-save" onclick="saveJournal()">Keep</button></div></div>';
+  body._reframes=allReframes;renderRoomSounds(f);syncOrbCue();document.getElementById('room').classList.add('open');}
+function closeRoom(){document.getElementById('room').classList.remove('open');document.documentElement.style.setProperty('--aura-1','#3a2a52');document.documentElement.style.setProperty('--aura-2','#1a2438');document.documentElement.style.setProperty('--aura-3','#2a1828');document.documentElement.style.setProperty('--accent','#c8b8e8');}
+function navReframe(dir){const body=document.getElementById('roomBody');const arr=body._reframes;if(!arr)return;reframeIdx=(reframeIdx+dir+arr.length)%arr.length;const el=document.getElementById('reframe');el.classList.add('hide');setTimeout(()=>{el.textContent=arr[reframeIdx];document.getElementById('rnCount').textContent=(reframeIdx+1)+' / '+arr.length;el.classList.remove('hide');},380);}
+function saveJournal(){const txt=document.getElementById('journalArea').value;state.journals[activeFeeling.id]=txt;saveState();toast('Kept. Just for you.');}
+let orbTimer;function syncOrbCue(){clearInterval(orbTimer);const cue=()=>{const el=document.getElementById('orbCue');if(!el)return clearInterval(orbTimer);const cycle=state.breathe*1000;const t=Date.now()%cycle;el.textContent=t<cycle*0.45?'breathe in':(t<cycle*0.55?'hold':'breathe out');};cue();orbTimer=setInterval(cue,400);}
+function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
+function makeNoise(type,vol){const size=audioCtx.sampleRate*4;const buf=audioCtx.createBuffer(1,size,audioCtx.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<size;i++)d[i]=Math.random()*2-1;const src=audioCtx.createBufferSource();src.buffer=buf;src.loop=true;const gain=audioCtx.createGain();gain.gain.value=vol;let f;if(type==='rain'){f=audioCtx.createBiquadFilter();f.type='bandpass';f.frequency.value=2200;f.Q.value=0.4;src.connect(f);f.connect(gain);}else if(type==='ocean'){f=audioCtx.createBiquadFilter();f.type='lowpass';f.frequency.value=700;const lfo=audioCtx.createOscillator(),lg=audioCtx.createGain();lfo.frequency.value=0.07;lg.gain.value=350;lfo.connect(lg);lg.connect(f.frequency);lfo.start();src.connect(f);f.connect(gain);}else if(type==='fire'){f=audioCtx.createBiquadFilter();f.type='lowpass';f.frequency.value=550;src.connect(f);f.connect(gain);}else if(type==='wind'){f=audioCtx.createBiquadFilter();f.type='bandpass';f.frequency.value=380;f.Q.value=0.25;src.connect(f);f.connect(gain);}else{src.connect(gain);}gain.connect(audioCtx.destination);src.start();return{src,gain};}
+function makeTone(freq,vol){const osc=audioCtx.createOscillator(),g=audioCtx.createGain();osc.frequency.value=freq;osc.type='sine';g.gain.value=vol*0.25;osc.connect(g);g.connect(audioCtx.destination);osc.start();return{src:osc,gain:g};}
+function makeDrone(vol){const nodes=[];[55,110,165,220].forEach((fr,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=fr;o.type=i===0?'sine':'triangle';g.gain.value=vol*0.35/(i+1);o.connect(g);g.connect(audioCtx.destination);o.start();nodes.push({src:o,gain:g});});return nodes;}
+function toggleSound(id){initAudio();if(audioCtx.state==='suspended')audioCtx.resume();const ss=soundState[id],sc=SOUNDSCAPES.find(s=>s.id===id);if(!ss.on){ss.on=true;if(['rain','ocean','fire','wind'].includes(sc.type))soundNodes[id]=makeNoise(sc.type,ss.vol);else if(sc.type==='tone')soundNodes[id]=makeTone(sc.freq,ss.vol);else if(sc.type==='drone')soundNodes[id]=makeDrone(ss.vol);}else{ss.on=false;const n=soundNodes[id];if(n){(Array.isArray(n)?n:[n]).forEach(x=>{try{x.src.stop();}catch(e){}});soundNodes[id]=null;}}renderSoundList();if(activeFeeling)renderRoomSounds(activeFeeling);}
+function setVol(id,v){soundState[id].vol=v;const n=soundNodes[id];if(n){if(Array.isArray(n))n.forEach((x,i)=>x.gain.gain.setTargetAtTime(v*0.35/(i+1),audioCtx.currentTime,0.1));else n.gain.gain.setTargetAtTime(v,audioCtx.currentTime,0.1);}}
+function renderRoomSounds(f){const wrap=document.getElementById('roomSounds');if(!wrap)return;wrap.innerHTML='';SOUNDSCAPES.forEach(sc=>{const chip=document.createElement('div');chip.className='sound-chip'+(soundState[sc.id].on?' on':'');chip.innerHTML='<span class="sc-dot"></span>'+sc.label;chip.onclick=()=>toggleSound(sc.id);wrap.appendChild(chip);});}
+function renderSoundList(){const list=document.getElementById('soundList');list.innerHTML='';SOUNDSCAPES.forEach(sc=>{const ss=soundState[sc.id];const row=document.createElement('div');row.className='snd-item';row.innerHTML='<span class="snd-label">'+sc.label+'</span><div class="snd-ctrl"><input type="range" class="slider" min="0" max="1" step="0.01" value="'+ss.vol+'" oninput="setVol(\''+sc.id+'\',parseFloat(this.value))"><button class="snd-tog'+(ss.on?' on':'')+'" onclick="toggleSound(\''+sc.id+'\')">'+(ss.on?'\u25A0':'\u25B6')+'</button></div>';list.appendChild(row);});}
+function openSound(){initAudio();renderSoundList();document.getElementById('soundPanel').classList.add('open');}
+function closeSound(){document.getElementById('soundPanel').classList.remove('open');}
+function openSOS(){const fake={id:'sos',title:'Stay with me',aura:['#2a1a1a','#1a2030','#241620'],accent:'#e8b0a0',reframes:SOS_STEPS,ground:{title:'Longer exhale, four rounds',steps:['In through the nose for 4.','Hold for 4.','Out through the mouth for 6.','Again. Three more times.']},journal:'What happened in the last hour that pulled the floor out from under me?'};openRoom(fake);}
+function openEdit(){document.getElementById('eName').value=state.name;document.getElementById('eWelcome').value=state.welcome;const b=document.getElementById('eBreathe');b.value=state.breathe;document.getElementById('eBreatheVal').textContent=state.breathe+'s';b.oninput=function(){document.getElementById('eBreatheVal').textContent=this.value+'s';};document.getElementById('eReframes').value=state.custom.join('\n');document.getElementById('editPanel').classList.add('open');}
+function closeEdit(){document.getElementById('editPanel').classList.remove('open');}
+function saveEdit(){state.name=document.getElementById('eName').value.trim()||'STILL';state.welcome=document.getElementById('eWelcome').value.trim();state.breathe=parseInt(document.getElementById('eBreathe').value)||11;state.custom=document.getElementById('eReframes').value.split('\n').map(l=>l.trim()).filter(Boolean);saveState();document.getElementById('hmark').textContent=state.name;document.querySelector('.s-mark').textContent=state.name;document.title=state.name;closeEdit();toast('Saved \u2726');}
+function clearData(){if(confirm('Reset everything to defaults? Your journal entries will be erased.')){localStorage.removeItem('still_v4');state=loadState();renderHome();closeEdit();toast('Reset done');}}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function initGrain(){const c=document.getElementById('grain'),ctx=c.getContext('2d');function draw(){c.width=innerWidth;c.height=innerHeight;const img=ctx.createImageData(c.width,c.height),d=img.data;for(let i=0;i<d.length;i+=4){const v=Math.random()*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255;}ctx.putImageData(img,0,0);}draw();window.addEventListener('resize',draw);}
+function enter(){initAudio();if(audioCtx.state==='suspended')audioCtx.resume();document.getElementById('splash').classList.add('gone');document.getElementById('app').classList.add('on');}
+document.addEventListener('keydown',e=>{if(document.getElementById('room').classList.contains('open')){if(e.key==='ArrowRight')navReframe(1);if(e.key==='ArrowLeft')navReframe(-1);if(e.key==='Escape')closeRoom();}if(e.key==='Escape'){closeSound();closeEdit();}});
+let sx=0;document.addEventListener('touchstart',e=>{sx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{if(!document.getElementById('room').classList.contains('open'))return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>55){dx>0?navReframe(-1):navReframe(1);}},{passive:true});
+(function init(){document.querySelector('.s-mark').textContent=state.name;document.querySelector('.s-line').textContent=state.welcome;document.title=state.name;renderHome();initGrain();})();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 </script>
 </body>
 </html>
